@@ -84,8 +84,8 @@ function App() {
     setShowWelcomePopup(false);
   };
 
-  const handleExportPDF = () => {
-    exportToPDF(sessions, stats);
+  const handleExportPDF = async () => {
+    await exportToPDF(sessions, stats);
   };
 
   const openQRPopup = () => {

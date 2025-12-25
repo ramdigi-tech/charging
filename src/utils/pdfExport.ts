@@ -3,11 +3,23 @@ import autoTable from 'jspdf-autotable';
 import { ChargingSession, ChargingStats } from '../types/charging';
 import { formatJakartaDateShort, formatJakartaTimeOnly, getTimezone } from './dateUtils';
 
-export const exportToPDF = (
+const imageToBase64 = async (url: string): Promise<string> => {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+};
+
+export const exportToPDF = async (
   sessions: ChargingSession[],
   stats: ChargingStats
 ) => {
   const doc = new jsPDF();
+  const logoBase64 = await imageToBase64('/Logo DIGI RAM.png');
 
   const pageWidth = doc.internal.pageSize.getWidth();
 
@@ -122,6 +134,10 @@ export const exportToPDF = (
 
   for (let i = 1; i <= totalPages; i++) {
     doc.setPage(i);
+
+    doc.setGState(new (doc as any).GState({ opacity: 0.08 }));
+    doc.addImage(logoBase64, 'PNG', pageWidth / 2 - 35, pageHeight / 2 - 35, 70, 70);
+    doc.setGState(new (doc as any).GState({ opacity: 1 }));
 
     doc.setFontSize(8);
     doc.setTextColor(128);
