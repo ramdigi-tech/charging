@@ -1,6 +1,6 @@
 import { ChargingSession } from '../types/charging';
 import * as XLSX from 'xlsx';
-import { formatJakartaDateShort, formatJakartaTimeOnly } from './dateUtils';
+import { formatJakartaDateShort, formatJakartaTimeOnly, formatDateTimeWithTimezone } from './dateUtils';
 
 export interface BackupData {
   version: string;
@@ -56,7 +56,8 @@ export const createBackup = (sessions: ChargingSession[]): void => {
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Riwayat Pengisian');
 
-  const fileName = `CLA_Backup_${new Date().getFullYear()}_${(new Date().getMonth() + 1).toString().padStart(2, '0')}_${new Date().getDate().toString().padStart(2, '0')}.xlsx`;
+  const timestamp = formatDateTimeWithTimezone(new Date());
+  const fileName = `CLA_Backup_${timestamp}.xlsx`;
   XLSX.writeFile(workbook, fileName);
 };
 

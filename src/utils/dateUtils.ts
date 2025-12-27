@@ -166,3 +166,27 @@ export const getYearStart = (date: Date): Date => {
   const jakartaDate = new Date(date.toLocaleString("en-US", {timeZone: getCurrentTimezoneString()}));
   return new Date(jakartaDate.getFullYear(), 0, 1);
 };
+
+export const getTimezoneAbbreviation = (): TimezoneType => {
+  return getTimezone();
+};
+
+export const formatDateTimeWithTimezone = (date: Date): string => {
+  const tz = getTimezone();
+  const dateStr = new Intl.DateTimeFormat('en-US', {
+    timeZone: getCurrentTimezoneString(),
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  }).format(date);
+
+  const [datePart, timePart] = dateStr.split(', ');
+  const [month, day, year] = datePart.split('/');
+  const [hour, minute, second] = timePart.split(':');
+
+  return `${year}_${month}_${day}_${hour}_${minute}_${second}_${tz}`;
+};
