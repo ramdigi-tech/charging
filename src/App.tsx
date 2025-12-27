@@ -14,7 +14,7 @@ function App() {
     return saved ? JSON.parse(saved) : false;
   });
 
-  const [showWelcomePopup, setShowWelcomePopup] = useState(true);
+  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
   const [showQRPopup, setShowQRPopup] = useState(false);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
