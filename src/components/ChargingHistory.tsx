@@ -1,5 +1,5 @@
 import React from 'react';
-import { Battery, Clock, Zap, Calendar, Trash2, ChevronDown, ChevronRight, MapPin, ExternalLink } from 'lucide-react';
+import { Battery, Clock, Zap, Calendar, Trash2, ChevronDown, ChevronRight, MapPin } from 'lucide-react';
 import { ChargingSession } from '../types/charging';
 import { formatJakartaDate, formatJakartaTimeOnly, getTimezone } from '../utils/dateUtils';
 
@@ -294,19 +294,20 @@ export const ChargingHistory: React.FC<ChargingHistoryProps> = ({
                                           <div className="flex items-center gap-1.5">
                                             <MapPin className="h-3.5 w-3.5 text-gray-500 dark:text-gray-400 flex-shrink-0" />
                                             <div className="flex items-center gap-1.5 flex-1">
-                                              <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
-                                                {session.location}
-                                              </span>
-                                              {session.coordinates && (
+                                              {session.coordinates ? (
                                                 <a
                                                   href={`https://www.google.com/maps?q=${session.coordinates.latitude},${session.coordinates.longitude}`}
                                                   target="_blank"
                                                   rel="noopener noreferrer"
-                                                  className="inline-flex items-center gap-0.5 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline"
+                                                  className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline"
                                                   title="Buka di Google Maps"
                                                 >
-                                                  <ExternalLink className="h-3 w-3" />
+                                                  {session.location}
                                                 </a>
+                                              ) : (
+                                                <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                                                  {session.location}
+                                                </span>
                                               )}
                                             </div>
                                           </div>
