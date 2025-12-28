@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Battery, Zap, Clock, Bike, MapPin, Loader2, ExternalLink } from 'lucide-react';
 import { ChargingSession } from '../types/charging';
 import { formatJakartaTime, formatJakartaTimeOnly, getJakartaDate, getTimezone } from '../utils/dateUtils';
@@ -22,6 +22,15 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
   const [isDetectingLocation, setIsDetectingLocation] = useState<boolean>(false);
   const [locationError, setLocationError] = useState<string>('');
   const [hasDetectedOnce, setHasDetectedOnce] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!currentSession) {
+      setBatteryInput('');
+      setLocationData(null);
+      setLocationError('');
+      setHasDetectedOnce(false);
+    }
+  }, [currentSession]);
 
   const handleBatteryInputChange = (value: string, isEndCharging: boolean = false) => {
     const numericValue = value.replace(/[^0-9]/g, '');
