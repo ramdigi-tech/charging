@@ -3,7 +3,6 @@ import { Battery, Zap, Clock, Bike, MapPin, Loader2, ExternalLink } from 'lucide
 import { ChargingSession } from '../types/charging';
 import { formatJakartaTime, formatJakartaTimeOnly, getJakartaDate, getTimezone } from '../utils/dateUtils';
 import { RealtimeClock } from './RealtimeClock';
-import { ChargingIndicator } from './ChargingIndicator';
 import { detectLocation, LocationData } from '../utils/locationUtils';
 
 interface ChargingStatusProps {
@@ -143,8 +142,9 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
       {currentSession ? (
         <div className="space-y-4">
           <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-900 rounded-lg p-4">
-            <div className="mb-4">
-              <ChargingIndicator />
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-3 h-3 bg-blue-500 dark:bg-blue-400 rounded-full animate-pulse"></div>
+              <span className="font-medium text-blue-700 dark:text-blue-300">Sedang Mengisi</span>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
