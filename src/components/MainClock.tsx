@@ -68,6 +68,7 @@ export const MainClock: React.FC = () => {
           <button
             onClick={() => setShowTimezoneMenu(!showTimezoneMenu)}
             className="inline-flex items-center gap-1 text-xs sm:text-sm text-gray-500 dark:text-gray-500 mb-2 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            title="Rubah zona waktu"
           >
             <Clock className="h-3 w-3" />
             {TIMEZONE_LABELS[timezone]} ({timezone})
