@@ -146,7 +146,22 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
               <div className="w-3 h-3 bg-blue-500 dark:bg-blue-400 rounded-full animate-pulse"></div>
               <span className="font-medium text-blue-700 dark:text-blue-300">Sedang Mengisi</span>
             </div>
-            
+
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Progres Pengisian</span>
+                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">{currentSession.startBattery}% → 100%</span>
+              </div>
+              <div className="relative w-full h-3 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+                <div
+                  className="h-full bg-gradient-to-r from-blue-400 to-blue-600 dark:from-blue-500 dark:to-blue-700 rounded-full transition-all duration-500 ease-out animate-charging"
+                  style={{
+                    width: `${Math.min(((currentSession.startBattery + 20) / 100) * 100, 95)}%`
+                  }}
+                ></div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-gray-500 dark:text-gray-400" />
