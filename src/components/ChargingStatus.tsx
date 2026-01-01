@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Battery, Zap, Clock, Bike, MapPin, Loader2, ExternalLink } from 'lucide-react';
+import { Battery, Zap, Clock, Bike, MapPin, Loader2, ExternalLink, AlertCircle } from 'lucide-react';
 import { ChargingSession } from '../types/charging';
 import { formatJakartaTime, formatJakartaTimeOnly, getJakartaDate, getTimezone } from '../utils/dateUtils';
 import { RealtimeClock } from './RealtimeClock';
@@ -11,6 +11,7 @@ interface ChargingStatusProps {
   onEndCharging: (batteryPercentage: number) => void;
 }
 
+const CHARGE_RATE = 1 / 3;
 
 export const ChargingStatus: React.FC<ChargingStatusProps> = ({
   currentSession,
@@ -22,6 +23,8 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
   const [isDetectingLocation, setIsDetectingLocation] = useState<boolean>(false);
   const [locationError, setLocationError] = useState<string>('');
   const [hasDetectedOnce, setHasDetectedOnce] = useState<boolean>(false);
+  const [estimatedProgress, setEstimatedProgress] = useState<number>(0);
+  const [estimatedCompletionTime, setEstimatedCompletionTime] = useState<string>('');
 
   useEffect(() => {
     if (!currentSession) {
@@ -29,7 +32,39 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
       setLocationData(null);
       setLocationError('');
       setHasDetectedOnce(false);
+      setEstimatedProgress(0);
+      setEstimatedCompletionTime('');
     }
+  }, [currentSession]);
+
+  useEffect(() => {
+    if (!currentSession) return;
+
+    const updateProgress = () => {
+      const now = new Date();
+      const startTime = new Date(currentSession.startTime);
+      const elapsedMinutes = (now.getTime() - startTime.getTime()) / (1000 * 60);
+
+      const estimatedBattery = Math.min(
+        currentSession.startBattery + (elapsedMinutes * CHARGE_RATE),
+        100
+      );
+
+      setEstimatedProgress(estimatedBattery);
+
+      const remainingPercentage = 100 - currentSession.startBattery;
+      const remainingMinutes = remainingPercentage / CHARGE_RATE;
+      const completionTime = new Date(startTime.getTime() + remainingMinutes * 60 * 1000);
+
+      const hours = completionTime.getHours().toString().padStart(2, '0');
+      const minutes = completionTime.getMinutes().toString().padStart(2, '0');
+      setEstimatedCompletionTime(`${hours}:${minutes}`);
+    };
+
+    updateProgress();
+    const interval = setInterval(updateProgress, 1000);
+
+    return () => clearInterval(interval);
   }, [currentSession]);
 
   const handleBatteryInputChange = (value: string, isEndCharging: boolean = false) => {
@@ -150,15 +185,25 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Progres Pengisian</span>
-                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">{currentSession.startBattery}% → 100%</span>
+                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">{Math.round(estimatedProgress)}% (Perkiraan)</span>
               </div>
               <div className="relative w-full h-3 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
                 <div
                   className="h-full bg-gradient-to-r from-blue-400 to-blue-600 dark:from-blue-500 dark:to-blue-700 rounded-full transition-all duration-500 ease-out animate-charging"
                   style={{
-                    width: `${Math.min(((currentSession.startBattery + 20) / 100) * 100, 95)}%`
+                    width: `${Math.min((estimatedProgress / 100) * 100, 100)}%`
                   }}
                 ></div>
+              </div>
+
+              <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                  <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
+                    <p className="font-medium">Estimasi waktu selesai: <span className="font-semibold">{estimatedCompletionTime}</span></p>
+                    <p className="text-xs text-blue-600 dark:text-blue-400">Perkiraan berdasarkan Polytron Fox R (0-100% = 5 jam). Waktu sebenarnya bisa berbeda tergantung kondisi kendaraan Anda.</p>
+                  </div>
+                </div>
               </div>
             </div>
 
