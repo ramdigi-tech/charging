@@ -201,7 +201,7 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
                   <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
                   <div className="text-xs text-blue-700 dark:text-blue-300 space-y-1">
                     <p className="font-medium">Estimasi waktu selesai: <span className="font-semibold">{estimatedCompletionTime}</span></p>
-                    <p className="text-xs text-blue-600 dark:text-blue-400">Perkiraan berdasarkan Polytron Fox R (0-100% = 5 jam). Waktu sebenarnya bisa berbeda tergantung kondisi kendaraan Anda.</p>
+                    <p className="text-xs text-blue-600 dark:text-blue-400">Perkiraan berdasarkan (0-100% = 5 jam). Waktu sebenarnya bisa berbeda tergantung kondisi kendaraan Anda.</p>
                   </div>
                 </div>
               </div>
