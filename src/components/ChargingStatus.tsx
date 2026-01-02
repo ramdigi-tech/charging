@@ -185,13 +185,14 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Progres Pengisian</span>
-                <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">{Math.round(estimatedProgress)}% (Perkiraan)</span>
+                <span className={`text-xs font-semibold ${estimatedProgress >= 100 ? 'text-green-600 dark:text-green-400' : 'text-blue-600 dark:text-blue-400'}`}>{Math.round(estimatedProgress)}% {estimatedProgress >= 100 ? '✓' : '(Perkiraan)'}</span>
               </div>
-              <div className="relative w-full h-3 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+              <div className="relative w-full h-4 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
                 <div
-                  className="h-full bg-gradient-to-r from-blue-400 to-blue-600 dark:from-blue-500 dark:to-blue-700 rounded-full transition-all duration-500 ease-out animate-charging"
+                  className={`h-full rounded-full transition-all duration-300 ease-out ${estimatedProgress >= 100 ? 'bg-gradient-to-r from-green-400 to-green-600 dark:from-green-500 dark:to-green-700 shadow-lg shadow-green-500/50' : 'animate-charging'}`}
                   style={{
-                    width: `${Math.min((estimatedProgress / 100) * 100, 100)}%`
+                    width: `${Math.max(estimatedProgress, 0)}%`,
+                    minWidth: estimatedProgress > 0 ? '8px' : '0px'
                   }}
                 ></div>
               </div>
@@ -237,7 +238,7 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
               value={batteryInput}
               onChange={(e) => handleBatteryInputChange(e.target.value, true)}
               placeholder="Persentase baterai saat ini"
-              className="flex-1 px-4 py-4 sm:py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 text-lg sm:text-base"
+              className="flex-1 px-4 py-4 sm:py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 text-lg sm:text-base transition-all duration-200"
             />
             <button
               onClick={handleEndCharging}
@@ -265,7 +266,7 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
                 value={batteryInput}
                 onChange={(e) => handleBatteryInputChange(e.target.value)}
                 placeholder="Masukkan persentase baterai"
-                className="w-full px-4 py-4 sm:py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 text-lg sm:text-base"
+                className="w-full px-4 py-4 sm:py-3 bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400 text-lg sm:text-base transition-all duration-200"
               />
             </div>
 
