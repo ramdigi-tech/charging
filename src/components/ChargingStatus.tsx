@@ -189,7 +189,7 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
               </div>
               <div className="relative w-full h-4 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
                 <div
-                  className={`h-full rounded-full transition-all duration-300 ease-out ${estimatedProgress >= 100 ? 'bg-gradient-to-r from-green-400 to-green-600 dark:from-green-500 dark:to-green-700 shadow-lg shadow-green-500/50' : 'animate-charging'}`}
+                  className={`h-full rounded-full ${estimatedProgress >= 100 ? 'bg-gradient-to-r from-green-400 to-green-600 dark:from-green-500 dark:to-green-700 shadow-lg shadow-green-500/50' : 'animate-charging transition-all duration-300 ease-out'}`}
                   style={{
                     width: `${Math.max(estimatedProgress, 0)}%`,
                     minWidth: estimatedProgress > 0 ? '8px' : '0px'
