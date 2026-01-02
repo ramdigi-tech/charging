@@ -185,13 +185,13 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-medium text-gray-700 dark:text-gray-300">Progres Pengisian</span>
-                <span className={`text-xs font-semibold ${estimatedProgress >= 100 ? 'text-green-600 dark:text-green-400' : 'text-blue-600 dark:text-blue-400'}`}>{Math.round(estimatedProgress)}% {estimatedProgress >= 100 ? '✓' : '(Perkiraan)'}</span>
+                <span className={`text-xs font-semibold ${Math.round(estimatedProgress) >= 100 ? 'text-green-600 dark:text-green-400' : 'text-blue-600 dark:text-blue-400'}`}>{Math.round(estimatedProgress)}% {Math.round(estimatedProgress) >= 100 ? '✓' : '(Perkiraan)'}</span>
               </div>
               <div className="relative w-full h-4 bg-gray-300 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
                 <div
-                  className={`h-full rounded-full ${estimatedProgress >= 100 ? 'bg-gradient-to-r from-green-400 to-green-600 dark:from-green-500 dark:to-green-700 shadow-lg shadow-green-500/50' : 'animate-charging transition-all duration-300 ease-out'}`}
+                  className={`h-full rounded-full ${Math.round(estimatedProgress) >= 100 ? 'bg-gradient-to-r from-green-400 to-green-600 dark:from-green-500 dark:to-green-700 shadow-lg shadow-green-500/50' : 'animate-charging transition-all duration-300 ease-out'}`}
                   style={{
-                    width: `${Math.max(estimatedProgress, 0)}%`,
+                    width: `${Math.min(Math.round(estimatedProgress), 100)}%`,
                     minWidth: estimatedProgress > 0 ? '8px' : '0px'
                   }}
                 ></div>
