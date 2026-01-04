@@ -254,7 +254,8 @@ export const ChargingHistory: React.FC<ChargingHistoryProps> = ({
                                               {new Intl.DateTimeFormat('id-ID', {
                                                 timeZone: 'Asia/Jakarta',
                                                 weekday: 'long',
-                                                day: 'numeric'
+                                                day: 'numeric',
+                                                month: 'long'
                                               }).format(session.startTime)}
                                               {/* Show cross-day indicator inline */}
                                               {session.endTime && session.startTime.toDateString() !== session.endTime.toDateString() && (
@@ -262,7 +263,8 @@ export const ChargingHistory: React.FC<ChargingHistoryProps> = ({
                                                   – {new Intl.DateTimeFormat('id-ID', {
                                                     timeZone: 'Asia/Jakarta',
                                                     weekday: 'long',
-                                                    day: 'numeric'
+                                                    day: 'numeric',
+                                                    month: 'long'
                                                   }).format(session.endTime)}
                                                 </span>
                                               )}
