@@ -94,14 +94,14 @@ export const ChargingHistory: React.FC<ChargingHistoryProps> = ({
     
     // Jika dalam bulan dan tahun yang sama
     if (startOfWeek.getMonth() === endOfWeek.getMonth() && startYear === endYear) {
-      return `${startDayName}, ${startDay} – ${endDayName}, ${endDay}`;
+      return `${startDayName}, ${startDay} – ${endDayName}, ${endDay} ${startMonth} ${startYear}`;
     }
     // Jika bulan berbeda tapi tahun sama
     if (startYear === endYear) {
-      return `${startDayName}, ${startDay} – ${endDayName}, ${endDay}`;
+      return `${startDayName}, ${startDay} ${startMonth} – ${endDayName}, ${endDay} ${endMonth} ${startYear}`;
     }
     // Jika tahun berbeda
-    return `${startDayName}, ${startDay} ${startYear} – ${endDayName}, ${endDay} ${endYear}`;
+    return `${startDayName}, ${startDay} ${startMonth} ${startYear} – ${endDayName}, ${endDay} ${endMonth} ${endYear}`;
   };
 
   const handleDelete = (sessionId: string) => {
@@ -255,7 +255,8 @@ export const ChargingHistory: React.FC<ChargingHistoryProps> = ({
                                                 timeZone: 'Asia/Jakarta',
                                                 weekday: 'long',
                                                 day: 'numeric',
-                                                month: 'long'
+                                                month: 'long',
+                                                year: 'numeric'
                                               }).format(session.startTime)}
                                               {/* Show cross-day indicator inline */}
                                               {session.endTime && session.startTime.toDateString() !== session.endTime.toDateString() && (
@@ -264,7 +265,8 @@ export const ChargingHistory: React.FC<ChargingHistoryProps> = ({
                                                     timeZone: 'Asia/Jakarta',
                                                     weekday: 'long',
                                                     day: 'numeric',
-                                                    month: 'long'
+                                                    month: 'long',
+                                                    year: 'numeric'
                                                   }).format(session.endTime)}
                                                 </span>
                                               )}
