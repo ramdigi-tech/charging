@@ -213,9 +213,9 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
                 <Clock className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                 <div>
                   <p className="text-xs text-gray-500 dark:text-gray-400">Dimulai pada</p>
-                  <div className="font-medium text-gray-900 dark:text-white flex items-center justify-between gap-2">
+                  <div className="font-medium text-gray-900 dark:text-white flex items-center gap-1">
                     <RealtimeClock startTime={currentSession.startTime} />
-                    <span className="text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">{getTimezone()}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">{getTimezone()}</span>
                   </div>
                 </div>
               </div>
