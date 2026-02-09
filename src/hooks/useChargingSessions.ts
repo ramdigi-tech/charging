@@ -8,23 +8,39 @@ export const useChargingSessions = () => {
   const [sessions, setSessions] = useState<ChargingSession[]>([]);
   const [currentSession, setCurrentSession] = useState<ChargingSession | null>(null);
 
-  // Load sessions from localStorage on mount
+  // Load sessions from localStorage on mount and when visibility changes
   useEffect(() => {
-    const storedSessions = localStorage.getItem(STORAGE_KEY);
-    if (storedSessions) {
-      const parsedSessions = JSON.parse(storedSessions).map((session: any) => ({
-        ...session,
-        startTime: new Date(session.startTime),
-        endTime: session.endTime ? new Date(session.endTime) : undefined,
-      }));
-      setSessions(parsedSessions);
-      
-      // Check if there's an active session
-      const activeSession = parsedSessions.find((session: ChargingSession) => session.isActive);
-      if (activeSession) {
-        setCurrentSession(activeSession);
+    const loadSessions = () => {
+      const storedSessions = localStorage.getItem(STORAGE_KEY);
+      if (storedSessions) {
+        const parsedSessions = JSON.parse(storedSessions).map((session: any) => ({
+          ...session,
+          startTime: new Date(session.startTime),
+          endTime: session.endTime ? new Date(session.endTime) : undefined,
+        }));
+        setSessions(parsedSessions);
+
+        // Check if there's an active session
+        const activeSession = parsedSessions.find((session: ChargingSession) => session.isActive);
+        if (activeSession) {
+          setCurrentSession(activeSession);
+        }
       }
-    }
+    };
+
+    loadSessions();
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        loadSessions();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   // Save sessions to localStorage whenever sessions change

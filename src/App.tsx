@@ -63,24 +63,16 @@ function App() {
       setShowUpdatePrompt(true);
     };
 
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        window.location.reload();
-      }
-    };
-
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
     window.addEventListener('swUpdated', handleSWUpdate);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
       window.removeEventListener('swUpdated', handleSWUpdate);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
 
