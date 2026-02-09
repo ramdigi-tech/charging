@@ -9,11 +9,6 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>
 );
 
-const rootElement = document.getElementById('root');
-if (rootElement) {
-  rootElement.classList.add('ready');
-}
-
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
