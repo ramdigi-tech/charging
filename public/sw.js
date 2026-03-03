@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1.96';
+const CACHE_VERSION = 'v1.97';
 const STATIC_CACHE = `cla-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `cla-dynamic-${CACHE_VERSION}`;
 
@@ -51,11 +51,11 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
 
   if (url.origin === location.origin) {
-    event.respondWith(
-      caches.match(request).then((cachedResponse) => {
-        const fetchPromise = fetch(request).then((response) => {
-          if (!response || response.status !== 200 || response.type === 'error') {
-            return response;
+    if (url.pathname === '/index.html' || url.pathname === '/') {
+      event.respondWith(
+        fetch(request).then((response) => {
+          if (!response || response.status !== 200) {
+            return caches.match(request);
           }
 
           const responseToCache = response.clone();
@@ -65,15 +65,34 @@ self.addEventListener('fetch', (event) => {
 
           return response;
         }).catch(() => {
-          if (request.destination === 'document') {
-            return caches.match('/index.html');
-          }
-          return cachedResponse || new Response('Offline', { status: 503 });
-        });
+          return caches.match(request) || caches.match('/index.html');
+        })
+      );
+    } else {
+      event.respondWith(
+        caches.match(request).then((cachedResponse) => {
+          const fetchPromise = fetch(request).then((response) => {
+            if (!response || response.status !== 200 || response.type === 'error') {
+              return response;
+            }
 
-        return cachedResponse || fetchPromise;
-      })
-    );
+            const responseToCache = response.clone();
+            caches.open(DYNAMIC_CACHE).then((cache) => {
+              cache.put(request, responseToCache);
+            });
+
+            return response;
+          }).catch(() => {
+            if (request.destination === 'document') {
+              return caches.match('/index.html');
+            }
+            return cachedResponse || new Response('Offline', { status: 503 });
+          });
+
+          return cachedResponse || fetchPromise;
+        })
+      );
+    }
   } else {
     event.respondWith(
       fetch(request).catch(() => {
@@ -90,6 +109,10 @@ self.addEventListener('message', (event) => {
   }
 });
 
-self.addEventListener('controllerchange', () => {
-  console.log('[SW] Controller changed, reloading page');
-});
+setInterval(() => {
+  self.clients.matchAll().then((clients) => {
+    clients.forEach((client) => {
+      client.postMessage({ type: 'CHECK_UPDATE' });
+    });
+  });
+}, 5000);

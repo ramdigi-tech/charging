@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, Moon, Sun, FileDown, Download } from 'lucide-react';
+import { Zap, Moon, Sun, FileDown, Download, AlertCircle } from 'lucide-react';
 import { useChargingSessions } from './hooks/useChargingSessions';
 import { ChargingStatus } from './components/ChargingStatus';
 import { ChargingStats } from './components/ChargingStats';
@@ -7,6 +7,7 @@ import { ChargingHistory } from './components/ChargingHistory';
 import { MainClock } from './components/MainClock';
 import { BackupRestore } from './components/BackupRestore';
 import { exportToPDF } from './utils/pdfExport';
+import { UpdateManager } from './utils/updateManager';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -21,6 +22,7 @@ function App() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [showUpdatePrompt, setShowUpdatePrompt] = useState(false);
   const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null);
+  const [updateManager] = useState(() => new UpdateManager(30000));
 
   const {
     sessions,
@@ -43,6 +45,16 @@ function App() {
     }
     localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
   }, [isDarkMode]);
+
+  useEffect(() => {
+    updateManager.setUpdateCallback(() => {
+      setShowUpdatePrompt(true);
+    });
+
+    return () => {
+      updateManager.destroy();
+    };
+  }, [updateManager]);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: any) => {
@@ -112,11 +124,12 @@ function App() {
     localStorage.setItem('installPromptDismissed', 'true');
   };
 
-  const handleUpdateClick = () => {
+  const handleUpdateClick = async () => {
     if (waitingWorker) {
       waitingWorker.postMessage({ type: 'SKIP_WAITING' });
-      setShowUpdatePrompt(false);
     }
+    await updateManager.applyUpdate();
+    setShowUpdatePrompt(false);
   };
 
   const dismissUpdatePrompt = () => {
@@ -305,7 +318,7 @@ function App() {
               CLA 
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-500">
-              Version 2.53 by{' '}
+              Version 2.55 by{' '}
               <a
                 href="https://instagram.com/ramnuari"
                 target="_blank"
