@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, Moon, Sun, FileDown, Download, AlertCircle } from 'lucide-react';
+import { Zap, Moon, Sun, FileDown } from 'lucide-react';
 import { useChargingSessions } from './hooks/useChargingSessions';
 import { ChargingStatus } from './components/ChargingStatus';
 import { ChargingStats } from './components/ChargingStats';
@@ -20,8 +20,6 @@ function App() {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [showUpdatePrompt, setShowUpdatePrompt] = useState(false);
-  const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null);
   const [updateManager] = useState(() => new UpdateManager(30000));
 
   const {
@@ -65,22 +63,14 @@ function App() {
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
-    const handleSWUpdate = (event: any) => {
-      const registration = event.detail;
-      setWaitingWorker(registration.waiting);
-      setShowUpdatePrompt(true);
-    };
-
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
-    window.addEventListener('swUpdated', handleSWUpdate);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
-      window.removeEventListener('swUpdated', handleSWUpdate);
     };
   }, []);
 
@@ -120,17 +110,6 @@ function App() {
     localStorage.setItem('installPromptDismissed', 'true');
   };
 
-  const handleUpdateClick = async () => {
-    if (waitingWorker) {
-      waitingWorker.postMessage({ type: 'SKIP_WAITING' });
-    }
-    await updateManager.applyUpdate();
-    setShowUpdatePrompt(false);
-  };
-
-  const dismissUpdatePrompt = () => {
-    setShowUpdatePrompt(false);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black pb-8 relative overflow-hidden">
@@ -178,33 +157,6 @@ function App() {
         </div>
       )}
 
-      {/* Update Prompt */}
-      {showUpdatePrompt && (
-        <div className="fixed top-4 left-4 right-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl shadow-2xl p-4 z-50 animate-fade-in max-w-md mx-auto">
-          <button
-            onClick={dismissUpdatePrompt}
-            className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full bg-blue-700 hover:bg-blue-800 transition-colors text-white text-lg"
-            aria-label="Close"
-          >
-            ×
-          </button>
-          <div className="flex items-start gap-3 pr-6">
-            <div className="flex-shrink-0 w-10 h-10 bg-white rounded-xl flex items-center justify-center">
-              <Download className="h-6 w-6 text-blue-600" />
-            </div>
-            <div className="flex-1">
-              <h3 className="font-bold text-sm mb-1">Update Tersedia</h3>
-              <p className="text-xs text-blue-100 mb-3">Versi baru aplikasi sudah tersedia dengan fitur dan perbaikan terbaru</p>
-              <button
-                onClick={handleUpdateClick}
-                className="w-full bg-white text-blue-600 font-semibold py-2 px-4 rounded-lg text-sm hover:bg-blue-50 transition-colors"
-              >
-                Update Sekarang
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Install Prompt */}
       {showInstallPrompt && (

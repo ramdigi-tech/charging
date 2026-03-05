@@ -1,12 +1,36 @@
 export class UpdateManager {
   private checkInterval: NodeJS.Timeout | null = null;
   private lastETag: string | null = null;
+  private isTabActive: boolean = true;
+  private handleVisibilityChange: () => void;
+  private handleFocus: () => void;
+  private handleBlur: () => void;
 
   constructor(checkIntervalMs: number = 30000) {
+    this.handleVisibilityChange = () => {
+      this.isTabActive = !document.hidden;
+    };
+
+    this.handleFocus = () => {
+      this.isTabActive = true;
+    };
+
+    this.handleBlur = () => {
+      this.isTabActive = false;
+    };
+
+    document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    window.addEventListener('focus', this.handleFocus);
+    window.addEventListener('blur', this.handleBlur);
+
     this.checkInterval = setInterval(() => this.checkForUpdates(), checkIntervalMs);
   }
 
   private async checkForUpdates() {
+    if (!this.isTabActive) {
+      return;
+    }
+
     try {
       const response = await fetch('/index.html', { cache: 'no-store' });
       const eTag = response.headers.get('etag') || response.headers.get('last-modified');
@@ -44,5 +68,8 @@ export class UpdateManager {
     if (this.checkInterval) {
       clearInterval(this.checkInterval);
     }
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+    window.removeEventListener('focus', this.handleFocus);
+    window.removeEventListener('blur', this.handleBlur);
   }
 }
