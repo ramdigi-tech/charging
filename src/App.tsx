@@ -47,10 +47,6 @@ function App() {
   }, [isDarkMode]);
 
   useEffect(() => {
-    updateManager.setUpdateCallback(() => {
-      setShowUpdatePrompt(true);
-    });
-
     return () => {
       updateManager.destroy();
     };

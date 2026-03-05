@@ -1,7 +1,6 @@
 export class UpdateManager {
   private checkInterval: NodeJS.Timeout | null = null;
   private lastETag: string | null = null;
-  private onUpdateAvailable: (() => void) | null = null;
 
   constructor(checkIntervalMs: number = 30000) {
     this.checkInterval = setInterval(() => this.checkForUpdates(), checkIntervalMs);
@@ -18,28 +17,16 @@ export class UpdateManager {
       if (this.lastETag === null) {
         this.lastETag = currentFingerprint;
       } else if (this.lastETag !== currentFingerprint) {
-        console.log('[UpdateManager] New version detected');
-        this.lastETag = currentFingerprint;
-        if (this.onUpdateAvailable) {
-          this.onUpdateAvailable();
-        }
+        console.log('[UpdateManager] New version detected, auto-reloading...');
+        this.applyUpdate();
       }
     } catch (error) {
       console.error('[UpdateManager] Error checking for updates:', error);
     }
   }
 
-  setUpdateCallback(callback: () => void) {
-    this.onUpdateAvailable = callback;
-  }
-
   async applyUpdate() {
     console.log('[UpdateManager] Applying update...');
-    const clients = await navigator.serviceWorker.matchAll();
-
-    for (const client of clients) {
-      client.postMessage({ type: 'SKIP_WAITING' });
-    }
 
     const registration = await navigator.serviceWorker.getRegistration();
     if (registration?.waiting) {
