@@ -15,7 +15,10 @@ function App() {
     return saved ? JSON.parse(saved) : false;
   });
 
-  const [showWelcomePopup, setShowWelcomePopup] = useState(true);
+  const [showWelcomePopup, setShowWelcomePopup] = useState(() => {
+    const dismissed = localStorage.getItem('welcomePopupDismissed');
+    return !dismissed;
+  });
   const [showQRPopup, setShowQRPopup] = useState(false);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -80,6 +83,7 @@ function App() {
 
   const closeWelcomePopup = () => {
     setShowWelcomePopup(false);
+    localStorage.setItem('welcomePopupDismissed', 'true');
   };
 
   const handleExportPDF = async () => {
@@ -325,13 +329,13 @@ function App() {
 
       {/* Welcome Popup */}
       {showWelcomePopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 animate-fade-in">
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 px-4 animate-fade-in">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8">
             <div className="text-center mb-6">
               <div className="inline-flex p-4 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl mb-4">
                 <Zap className="h-10 w-10 text-blue-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2" style={{ fontFamily: "'Orbitron', sans-serif" }}>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2" style={{ fontFamily: "'Orbitron', sans-serif" }}>
                 Charging Log Application
               </h2>
               <div className="flex justify-center mt-3">
@@ -344,12 +348,12 @@ function App() {
             </div>
 
             <div className="space-y-4 mb-6">
-              <p className="text-gray-700 text-center leading-relaxed">
+              <p className="text-gray-700 dark:text-gray-300 text-center leading-relaxed">
                 For logging electric car or motorcycle charging
               </p>
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <p className="text-sm text-yellow-800 text-center font-medium">
-                  Your data is local. Back up regularly. Use one browser per vehicle. 
+              <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                <p className="text-sm text-yellow-800 dark:text-yellow-300 text-center font-medium">
+                  Your data is local. Back up regularly. Use one browser per vehicle.
                 </p>
               </div>
             </div>
