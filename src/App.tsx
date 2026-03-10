@@ -266,7 +266,7 @@ function App() {
               CLA 
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-500">
-              Version 2.55 by{' '}
+              Version 2.62 by{' '}
               <a
                 href="https://instagram.com/ramnuari"
                 target="_blank"
