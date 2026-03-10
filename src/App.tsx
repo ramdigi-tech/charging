@@ -305,14 +305,14 @@ function App() {
             </div>
             <div className="flex justify-center mb-4">
               <img
-                src="/Scan QRIS.jpeg"
+                src="/scan-qris.jpeg"
                 alt="QR Code Support"
                 className="w-full h-auto rounded-lg shadow-lg object-contain"
                 style={{ maxHeight: '400px' }}
               />
             </div>
             <a
-              href="/Scan QRIS.jpeg"
+              href="/scan-qris.jpeg"
               download="QRIS-Support.jpeg"
               className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-2.5 px-4 rounded-xl transition-all duration-200 hover:shadow-lg"
             >
@@ -326,17 +326,17 @@ function App() {
       {/* Welcome Popup */}
       {showWelcomePopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 px-4 animate-fade-in">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8">
             <div className="text-center mb-6">
               <div className="inline-flex p-4 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl mb-4">
                 <Zap className="h-10 w-10 text-blue-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2" style={{ fontFamily: "'Orbitron', sans-serif" }}>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2" style={{ fontFamily: "'Orbitron', sans-serif" }}>
                 Charging Log Application
               </h2>
               <div className="flex justify-center mt-3">
                 <img
-                  src="/Logo DIGI RAM.png"
+                  src="/logo-digi-ram.png"
                   alt="Ram Digi Tech"
                   className="h-12 object-contain"
                 />
@@ -344,11 +344,11 @@ function App() {
             </div>
 
             <div className="space-y-4 mb-6">
-              <p className="text-gray-700 dark:text-gray-300 text-center leading-relaxed">
+              <p className="text-gray-700 text-center leading-relaxed">
                 For logging electric car or motorcycle charging
               </p>
-              <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-                <p className="text-sm text-yellow-800 dark:text-yellow-300 text-center font-medium">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <p className="text-sm text-yellow-800 text-center font-medium">
                   Your data is local. Back up regularly. Use one browser per vehicle.
                 </p>
               </div>
