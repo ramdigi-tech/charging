@@ -15,10 +15,7 @@ function App() {
     return saved ? JSON.parse(saved) : false;
   });
 
-  const [showWelcomePopup, setShowWelcomePopup] = useState(() => {
-    const dismissed = localStorage.getItem('welcomePopupDismissed');
-    return !dismissed;
-  });
+  const [showWelcomePopup, setShowWelcomePopup] = useState(true);
   const [showQRPopup, setShowQRPopup] = useState(false);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -83,7 +80,6 @@ function App() {
 
   const closeWelcomePopup = () => {
     setShowWelcomePopup(false);
-    localStorage.setItem('welcomePopupDismissed', 'true');
   };
 
   const handleExportPDF = async () => {
