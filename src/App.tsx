@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, Moon, Sun, FileDown, Download } from 'lucide-react';
+import { Zap, Moon, Sun, FileDown, Download, AlertCircle, X } from 'lucide-react';
 import { useChargingSessions } from './hooks/useChargingSessions';
 import { ChargingStatus } from './components/ChargingStatus';
 import { ChargingStats } from './components/ChargingStats';
@@ -7,6 +7,7 @@ import { ChargingHistory } from './components/ChargingHistory';
 import { MainClock } from './components/MainClock';
 import { BackupRestore } from './components/BackupRestore';
 import { exportToPDF } from './utils/pdfExport';
+import { checkForUpdates } from './utils/versionChecker';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -17,6 +18,8 @@ function App() {
   const [showWelcomePopup, setShowWelcomePopup] = useState(true);
   const [showQRPopup, setShowQRPopup] = useState(false);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+  const [showUpdateNotification, setShowUpdateNotification] = useState(false);
+  const [updateVersion, setUpdateVersion] = useState<string>();
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
@@ -63,6 +66,22 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const checkVersion = async () => {
+      const result = await checkForUpdates();
+      if (result.hasUpdate && result.latestVersion) {
+        const dismissed = localStorage.getItem(`updateDismissed_${result.latestVersion}`);
+        if (!dismissed) {
+          setUpdateVersion(result.latestVersion);
+          setShowUpdateNotification(true);
+        }
+      }
+    };
+
+    const timer = setTimeout(checkVersion, 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
   };
@@ -97,6 +116,17 @@ function App() {
   const dismissInstallPrompt = () => {
     setShowInstallPrompt(false);
     localStorage.setItem('installPromptDismissed', 'true');
+  };
+
+  const handleUpdateRefresh = () => {
+    window.location.reload();
+  };
+
+  const dismissUpdateNotification = () => {
+    setShowUpdateNotification(false);
+    if (updateVersion) {
+      localStorage.setItem(`updateDismissed_${updateVersion}`, 'true');
+    }
   };
 
 
@@ -146,6 +176,34 @@ function App() {
         </div>
       )}
 
+      {/* Update Notification */}
+      {showUpdateNotification && updateVersion && (
+        <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-center py-3 z-50 shadow-lg">
+          <div className="container mx-auto px-4 flex items-center justify-center gap-3">
+            <AlertCircle className="h-5 w-5 flex-shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-semibold">Versi baru tersedia ({updateVersion})</p>
+              <p className="text-xs opacity-90">Backup data Anda terlebih dahulu sebelum refresh</p>
+            </div>
+            <div className="flex gap-2 flex-shrink-0">
+              <button
+                onClick={handleUpdateRefresh}
+                className="bg-white text-orange-600 hover:bg-orange-50 px-3 py-1 rounded text-xs font-semibold transition-colors"
+              >
+                Refresh Sekarang
+              </button>
+              <button
+                onClick={dismissUpdateNotification}
+                className="hover:bg-white hover:bg-opacity-20 p-1 rounded transition-colors"
+                aria-label="Dismiss"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
 
       {/* Install Prompt */}
       {showInstallPrompt && (
@@ -175,7 +233,7 @@ function App() {
         </div>
       )}
 
-      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-4xl" style={{ marginTop: isOnline ? '0' : '40px' }}>
+      <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 max-w-4xl" style={{ marginTop: (!isOnline || showUpdateNotification) ? '60px' : '0' }}>
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8 relative pt-4 px-4 sm:px-0">
           {/* Icon di tengah atas dengan Dark Mode Toggle */}
@@ -338,7 +396,7 @@ function App() {
               </p>
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <p className="text-sm text-yellow-800 text-center font-medium">
-                  Your data is local. Back up regularly. Use one browser per vehicle.
+                  Your data is local. Back up regularly before updates. Use one browser per vehicle.
                 </p>
               </div>
             </div>
