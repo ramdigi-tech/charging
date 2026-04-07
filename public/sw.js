@@ -108,11 +108,3 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
 });
-
-setInterval(() => {
-  self.clients.matchAll().then((clients) => {
-    clients.forEach((client) => {
-      client.postMessage({ type: 'CHECK_UPDATE' });
-    });
-  });
-}, 5000);

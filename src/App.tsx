@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, Moon, Sun, FileDown } from 'lucide-react';
+import { Zap, Moon, Sun, FileDown, Download } from 'lucide-react';
 import { useChargingSessions } from './hooks/useChargingSessions';
 import { ChargingStatus } from './components/ChargingStatus';
 import { ChargingStats } from './components/ChargingStats';
@@ -7,7 +7,6 @@ import { ChargingHistory } from './components/ChargingHistory';
 import { MainClock } from './components/MainClock';
 import { BackupRestore } from './components/BackupRestore';
 import { exportToPDF } from './utils/pdfExport';
-import { UpdateManager } from './utils/updateManager';
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -20,7 +19,6 @@ function App() {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [updateManager] = useState(() => new UpdateManager(30000));
 
   const {
     sessions,
@@ -44,20 +42,11 @@ function App() {
     localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
   }, [isDarkMode]);
 
-  useEffect(() => {
-    return () => {
-      updateManager.destroy();
-    };
-  }, [updateManager]);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      const installDismissed = localStorage.getItem('installPromptDismissed');
-      if (!installDismissed) {
-        setShowInstallPrompt(true);
-      }
     };
 
     const handleOnline = () => setIsOnline(true);
