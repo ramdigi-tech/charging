@@ -4,7 +4,7 @@ import { ChargingSession } from '../types/charging';
 import { formatJakartaTime, formatJakartaTimeOnly, getJakartaDate, getTimezone } from '../utils/dateUtils';
 import { RealtimeClock } from './RealtimeClock';
 import { detectLocation, LocationData } from '../utils/locationUtils';
-import { requestNotificationPermission, sendCharging50PercentNotification, sendCharging100PercentNotification } from '../utils/notificationUtils';
+import { requestNotificationPermission } from '../utils/notificationUtils';
 
 interface ChargingStatusProps {
   currentSession: ChargingSession | null;
@@ -26,8 +26,6 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
   const [hasDetectedOnce, setHasDetectedOnce] = useState<boolean>(false);
   const [estimatedProgress, setEstimatedProgress] = useState<number>(0);
   const [estimatedCompletionTime, setEstimatedCompletionTime] = useState<string>('');
-  const [notificationSent50, setNotificationSent50] = useState<boolean>(false);
-  const [notificationSent100, setNotificationSent100] = useState<boolean>(false);
   const [notificationPermissionRequested, setNotificationPermissionRequested] = useState<boolean>(false);
 
   useEffect(() => {
@@ -38,8 +36,6 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
       setHasDetectedOnce(false);
       setEstimatedProgress(0);
       setEstimatedCompletionTime('');
-      setNotificationSent50(false);
-      setNotificationSent100(false);
     } else {
       if (!notificationPermissionRequested) {
         requestNotificationPermission();
@@ -63,16 +59,6 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
 
       setEstimatedProgress(estimatedBattery);
 
-      if (estimatedBattery >= 50 && !notificationSent50) {
-        sendCharging50PercentNotification();
-        setNotificationSent50(true);
-      }
-
-      if (estimatedBattery >= 100 && !notificationSent100) {
-        sendCharging100PercentNotification();
-        setNotificationSent100(true);
-      }
-
       const remainingPercentage = 100 - currentSession.startBattery;
       const remainingMinutes = remainingPercentage / CHARGE_RATE;
       const completionTime = new Date(startTime.getTime() + remainingMinutes * 60 * 1000);
@@ -86,7 +72,7 @@ export const ChargingStatus: React.FC<ChargingStatusProps> = ({
     const interval = setInterval(updateProgress, 1000);
 
     return () => clearInterval(interval);
-  }, [currentSession, notificationSent50, notificationSent100]);
+  }, [currentSession]);
 
   const handleBatteryInputChange = (value: string, isEndCharging: boolean = false) => {
     const numericValue = value.replace(/[^0-9]/g, '');

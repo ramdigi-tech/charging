@@ -26,18 +26,3 @@ export const sendChargingNotification = (title: string, options?: NotificationOp
   }
 };
 
-export const sendCharging50PercentNotification = () => {
-  sendChargingNotification('Pengisian 50%', {
-    body: 'Baterai kendaraan Anda sudah mencapai 50%',
-    tag: 'charging-50',
-    requireInteraction: false,
-  });
-};
-
-export const sendCharging100PercentNotification = () => {
-  sendChargingNotification('Pengisian Selesai', {
-    body: 'Baterai kendaraan Anda sudah penuh 100%',
-    tag: 'charging-100',
-    requireInteraction: true,
-  });
-};
