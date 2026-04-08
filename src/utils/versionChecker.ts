@@ -1,4 +1,4 @@
-const CURRENT_VERSION = '2.63';
+const CURRENT_VERSION = '2.62';
 
 export async function checkForUpdates(): Promise<{
   hasUpdate: boolean;
