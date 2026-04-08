@@ -6,6 +6,7 @@ import { ChargingStats } from './components/ChargingStats';
 import { ChargingHistory } from './components/ChargingHistory';
 import { MainClock } from './components/MainClock';
 import { BackupRestore } from './components/BackupRestore';
+import { ChargingCalculator } from './components/ChargingCalculator';
 import { exportToPDF } from './utils/pdfExport';
 import { checkForUpdates } from './utils/versionChecker';
 
@@ -21,6 +22,7 @@ function App() {
   const [showUpdateNotification, setShowUpdateNotification] = useState(false);
   const [updateVersion, setUpdateVersion] = useState<string>();
   const [refreshCountdown, setRefreshCountdown] = useState<number>(30);
+  const [showCalculator, setShowCalculator] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
@@ -356,6 +358,9 @@ function App() {
         </footer>
       </div>
       </div>
+
+      {/* Charging Calculator */}
+      <ChargingCalculator isOpen={showCalculator} onToggle={() => setShowCalculator(!showCalculator)} />
 
       {/* QR Code Popup */}
       {showQRPopup && (
