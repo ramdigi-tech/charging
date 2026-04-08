@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v1.97';
+const CACHE_VERSION = 'v2.63';
 const STATIC_CACHE = `cla-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `cla-dynamic-${CACHE_VERSION}`;
 

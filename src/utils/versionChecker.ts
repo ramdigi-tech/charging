@@ -1,4 +1,4 @@
-const CURRENT_VERSION = '2.62';
+const CURRENT_VERSION = '2.63';
 
 export async function checkForUpdates(): Promise<{
   hasUpdate: boolean;
@@ -10,8 +10,8 @@ export async function checkForUpdates(): Promise<{
     });
     const html = await response.text();
 
-    const versionMatch = html.match(/Version\s+([\d.]+)/);
-    const latestVersion = versionMatch ? versionMatch[1] : CURRENT_VERSION;
+    const versionMatch = html.match(/const CACHE_VERSION = '([^']+)'/);
+    const latestVersion = versionMatch ? versionMatch[1].replace('v', '') : CURRENT_VERSION;
 
     const hasUpdate = compareVersions(latestVersion, CURRENT_VERSION) > 0;
 

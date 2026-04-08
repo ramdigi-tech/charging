@@ -20,6 +20,7 @@ function App() {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [showUpdateNotification, setShowUpdateNotification] = useState(false);
   const [updateVersion, setUpdateVersion] = useState<string>();
+  const [refreshCountdown, setRefreshCountdown] = useState<number>(30);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
@@ -67,6 +68,9 @@ function App() {
   }, []);
 
   useEffect(() => {
+    let autoRefreshTimer: NodeJS.Timeout;
+    let countdownTimer: NodeJS.Timeout;
+
     const checkVersion = async () => {
       const result = await checkForUpdates();
       if (result.hasUpdate && result.latestVersion) {
@@ -74,12 +78,31 @@ function App() {
         if (!dismissed) {
           setUpdateVersion(result.latestVersion);
           setShowUpdateNotification(true);
+          setRefreshCountdown(30);
+
+          countdownTimer = setInterval(() => {
+            setRefreshCountdown(prev => {
+              if (prev <= 1) {
+                clearInterval(countdownTimer);
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
+
+          autoRefreshTimer = setTimeout(() => {
+            handleUpdateRefresh();
+          }, 30000);
         }
       }
     };
 
     const timer = setTimeout(checkVersion, 2000);
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      if (autoRefreshTimer) clearTimeout(autoRefreshTimer);
+      if (countdownTimer) clearInterval(countdownTimer);
+    };
   }, []);
 
   const toggleDarkMode = () => {
@@ -183,7 +206,7 @@ function App() {
             <AlertCircle className="h-5 w-5 flex-shrink-0" />
             <div className="flex-1">
               <p className="text-sm font-semibold">Versi baru tersedia ({updateVersion})</p>
-              <p className="text-xs opacity-90">Backup data Anda terlebih dahulu sebelum refresh</p>
+              <p className="text-xs opacity-90">Refresh otomatis dalam {refreshCountdown}s. Backup data Anda terlebih dahulu jika perlu</p>
             </div>
             <div className="flex gap-2 flex-shrink-0">
               <button
