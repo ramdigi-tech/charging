@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calculator, Settings, X, ChevronUp, ChevronDown } from 'lucide-react';
+import { Zap, Settings, X, ChevronUp, ChevronDown } from 'lucide-react';
 import {
   calculateChargingCost,
   formatCurrency,
@@ -16,7 +16,7 @@ interface ChargingCalculatorProps {
 
 export function ChargingCalculator({ isOpen, onToggle }: ChargingCalculatorProps) {
   const [batteryIncrease, setBatteryIncrease] = useState(20);
-  const [evCapacity, setEvCapacity] = useState(60);
+  const [evCapacity, setEvCapacity] = useState(3.75);
   const [showSettings, setShowSettings] = useState(false);
   const [config, setConfig] = useState<ChargingCostConfig>(getChargingCostConfig());
   const [costPerKwhInput, setCostPerKwhInput] = useState(config.costPerKwh.toString());
@@ -46,10 +46,10 @@ export function ChargingCalculator({ isOpen, onToggle }: ChargingCalculatorProps
     return (
       <button
         onClick={onToggle}
-        className="fixed bottom-6 right-6 bg-gradient-to-br from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-200 z-40"
-        aria-label="Open calculator"
+        className="fixed bottom-6 left-6 bg-gradient-to-br from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-200 z-40"
+        aria-label="Buka kalkulator"
       >
-        <Calculator className="h-6 w-6" />
+        <Zap className="h-6 w-6" />
       </button>
     );
   }
@@ -60,9 +60,9 @@ export function ChargingCalculator({ isOpen, onToggle }: ChargingCalculatorProps
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2">
           <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg">
-            <Calculator className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <Zap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           </div>
-          <h2 className="font-semibold text-gray-900 dark:text-white">Kalkulator Biaya</h2>
+          <h2 className="font-semibold text-gray-900 dark:text-white">Kalkulator Biaya Charging</h2>
         </div>
         <button
           onClick={onToggle}
@@ -106,20 +106,21 @@ export function ChargingCalculator({ isOpen, onToggle }: ChargingCalculatorProps
               </div>
             </div>
 
-            {/* EV Capacity Input */}
+            {/* Battery Capacity Input */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Kapasitas Baterai EV (kWh)
+                Kapasitas Baterai (kWh)
               </label>
               <input
                 type="number"
-                min="10"
+                min="1"
                 max="200"
+                step="0.25"
                 value={evCapacity}
-                onChange={(e) => setEvCapacity(Math.max(10, Number(e.target.value)))}
+                onChange={(e) => setEvCapacity(Math.max(1, Number(e.target.value)))}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Default: 60 kWh (Tesla Model 3)</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Misal: 3.75 kWh (motor), 60 kWh (mobil)</p>
             </div>
 
             {/* Results */}
@@ -145,7 +146,7 @@ export function ChargingCalculator({ isOpen, onToggle }: ChargingCalculatorProps
                   {formatCurrency(calculation.estimatedCost)}
                 </p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                  untuk {batteryIncrease}% × {evCapacity} kWh
+                  {batteryIncrease}% dari {evCapacity} kWh
                 </p>
               </div>
             </div>
