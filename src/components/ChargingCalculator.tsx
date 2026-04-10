@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, Settings, X, ChevronUp, ChevronDown } from 'lucide-react';
+import { Calculator, Settings, X, ChevronUp, ChevronDown } from 'lucide-react';
 import {
   calculateChargingCost,
   formatCurrency,
@@ -60,7 +60,7 @@ export function ChargingCalculator({ isOpen, onToggle }: ChargingCalculatorProps
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2">
           <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg">
-            <Zap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <Calculator className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           </div>
           <h2 className="font-semibold text-gray-900 dark:text-white">Kalkulator Biaya Charging</h2>
         </div>
@@ -113,11 +113,11 @@ export function ChargingCalculator({ isOpen, onToggle }: ChargingCalculatorProps
               </label>
               <input
                 type="number"
-                min="1"
+                min="0.1"
                 max="200"
-                step="0.25"
-                value={evCapacity}
-                onChange={(e) => setEvCapacity(Math.max(1, Number(e.target.value)))}
+                step="0.1"
+                value={evCapacity || ''}
+                onChange={(e) => setEvCapacity(e.target.value ? Math.max(0.1, Number(e.target.value)) : 0)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Misal: 3.75 kWh (motor), 60 kWh (mobil)</p>
