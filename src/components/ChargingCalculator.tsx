@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, Settings, X, ChevronUp, ChevronDown } from 'lucide-react';
+import { Calculator, Settings, X, ChevronUp, ChevronDown } from 'lucide-react';
 import {
   calculateChargingCost,
   formatCurrency,
@@ -16,7 +16,7 @@ interface ChargingCalculatorProps {
 
 export function ChargingCalculator({ isOpen, onToggle }: ChargingCalculatorProps) {
   const [batteryIncrease, setBatteryIncrease] = useState(20);
-  const [evCapacity, setEvCapacity] = useState(3.75);
+  const [evCapacityInput, setEvCapacityInput] = useState('3.75');
   const [showSettings, setShowSettings] = useState(false);
   const [config, setConfig] = useState<ChargingCostConfig>(getChargingCostConfig());
   const [costPerKwhInput, setCostPerKwhInput] = useState(config.costPerKwh.toString());
@@ -26,7 +26,15 @@ export function ChargingCalculator({ isOpen, onToggle }: ChargingCalculatorProps
     setConfig(getChargingCostConfig());
   }, []);
 
-  const calculation = calculateChargingCost(batteryIncrease, evCapacity, config);
+  const evCapacity = parseFloat(evCapacityInput) || 0;
+  const calculation = calculateChargingCost(batteryIncrease, evCapacity > 0 ? evCapacity : 1, config);
+
+  const handleEvCapacityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    if (val === '' || /^\d*\.?\d*$/.test(val)) {
+      setEvCapacityInput(val);
+    }
+  };
 
   const handleSaveSettings = () => {
     const costPerKwh = parseFloat(costPerKwhInput) || config.costPerKwh;
@@ -49,18 +57,18 @@ export function ChargingCalculator({ isOpen, onToggle }: ChargingCalculatorProps
         className="fixed bottom-6 left-6 bg-gradient-to-br from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-200 z-40"
         aria-label="Buka kalkulator"
       >
-        <Zap className="h-6 w-6" />
+        <Calculator className="h-6 w-6" />
       </button>
     );
   }
 
   return (
-    <div className="fixed bottom-6 right-6 w-96 bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 z-40">
+    <div className="fixed bottom-6 left-6 w-96 bg-white dark:bg-gray-900 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 z-40">
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-2">
           <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg">
-            <Zap className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <Calculator className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           </div>
           <h2 className="font-semibold text-gray-900 dark:text-white">Kalkulator Biaya Charging</h2>
         </div>
@@ -112,15 +120,14 @@ export function ChargingCalculator({ isOpen, onToggle }: ChargingCalculatorProps
                 Kapasitas Baterai (kWh)
               </label>
               <input
-                type="number"
-                min="1"
-                max="200"
-                step="0.25"
-                value={evCapacity}
-                onChange={(e) => setEvCapacity(Math.max(1, Number(e.target.value)))}
+                type="text"
+                inputMode="decimal"
+                value={evCapacityInput}
+                onChange={handleEvCapacityChange}
+                placeholder="Contoh: 3.75"
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Misal: 3.75 kWh (motor), 60 kWh (mobil)</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Contoh: 3.75 kWh (motor), 60 kWh (mobil)</p>
             </div>
 
             {/* Results */}
@@ -146,7 +153,7 @@ export function ChargingCalculator({ isOpen, onToggle }: ChargingCalculatorProps
                   {formatCurrency(calculation.estimatedCost)}
                 </p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                  {batteryIncrease}% dari {evCapacity} kWh
+                  {batteryIncrease}% dari {evCapacityInput || '0'} kWh
                 </p>
               </div>
             </div>
