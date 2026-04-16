@@ -37,6 +37,14 @@ export function calculateChargingCost(
 ): CostCalculation {
   const finalConfig = config || getChargingCostConfig();
 
+  if (evBatteryCapacity === 0) {
+    return {
+      energyUsed: 0,
+      estimatedCost: 0,
+      batteryIncrease,
+    };
+  }
+
   const energyRequired = (batteryIncrease / 100) * evBatteryCapacity;
   const energyDrawn = energyRequired / finalConfig.chargerEfficiency;
   const estimatedCost = energyDrawn * finalConfig.costPerKwh;
